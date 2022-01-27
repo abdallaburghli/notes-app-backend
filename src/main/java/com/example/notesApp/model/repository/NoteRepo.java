@@ -1,4 +1,4 @@
-package com.example.notesApp.repository;
+package com.example.notesApp.model.repository;
 
 import com.example.notesApp.model.Note;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,12 +3,11 @@ package com.example.notesApp.service;
 import com.example.notesApp.mapper.NoteMapper;
 import com.example.notesApp.model.Note;
 import com.example.notesApp.pojo.NoteModel;
-import com.example.notesApp.repository.NoteRepo;
+import com.example.notesApp.model.repository.NoteRepo;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
