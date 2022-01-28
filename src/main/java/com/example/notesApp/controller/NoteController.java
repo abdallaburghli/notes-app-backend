@@ -2,6 +2,7 @@ package com.example.notesApp.controller;
 
 import com.example.notesApp.api.Response;
 import com.example.notesApp.pojo.NoteModel;
+import com.example.notesApp.security.LoggedIn;
 import com.example.notesApp.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +20,14 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping("/api/v1/notes")
+    @LoggedIn
     public Response<NoteModel> addNote(@Valid @RequestBody NoteModel request) {
         NoteModel res = noteService.addNote(request);
         return new Response<>(res);
     }
 
     @GetMapping("/api/v1/notes")
+    @LoggedIn
     public Response<List<NoteModel>> getNotesList() {
         List<NoteModel> res = noteService.getNotes();
         return new Response<>(res);

@@ -1,8 +1,12 @@
-package com.example.notesApp.service;
+package com.example.notesApp.service.impl;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.notesApp.pojo.AccessToken;
 import com.example.notesApp.pojo.Token;
+import com.example.notesApp.service.TokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +48,26 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token generateRefreshToken(UUID userId, UUID tokenId) {
-        return null;
+    public AccessToken verifyAccessToken(String token) {
+        try {
+            token = cleanToken(token);
+            DecodedJWT jwt = JWT.require(authAlgorithm)
+                    .withIssuer(adminHost)
+                    .withAudience(adminHost)
+                    .withClaim(PURPOSE, ACCESS)
+                    .build()
+                    .verify(token);
+            UUID userId = UUID.fromString(jwt.getSubject());
+            UUID tokenId = UUID.fromString(jwt.getId());
+            Boolean root = jwt.getClaim(ROOT).asBoolean();
+            return new AccessToken(userId, tokenId, root);
+        } catch (JWTVerificationException e) {
+            throw new RuntimeException("Invalid Token {}", e);
+        }
     }
+
+    private String cleanToken(String token) {
+        return token.replaceAll("(?i)bearer ", "");
+    }
+
 }

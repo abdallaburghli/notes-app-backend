@@ -1,14 +1,18 @@
-package com.example.notesApp.service;
+package com.example.notesApp.service.impl;
 
+import com.example.notesApp.config.CurrentPrincipal;
 import com.example.notesApp.mapper.UserMapper;
 import com.example.notesApp.model.User;
 import com.example.notesApp.model.repository.UserRepo;
 import com.example.notesApp.pojo.*;
 import com.example.notesApp.security.PasswordPolicy;
+import com.example.notesApp.service.AuthenticationService;
+import com.example.notesApp.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -65,5 +69,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .setAccessToken(accessToken.getToken())
                 .setAccessTokenExpiry(accessToken.getExpiryDate())
                 .setUser(userModel);
+    }
+
+    @Override
+    public CurrentPrincipal authenticate(String token) {
+        if (!StringUtils.hasText(token))
+            return new CurrentPrincipal()
+                    .setType(CurrentPrincipal.Type.GUEST);
+
+        AccessToken accessToken = tokenService.verifyAccessToken(token);
+
+        return new CurrentPrincipal()
+                .setType(CurrentPrincipal.Type.USER)
+                .setSubjectId(accessToken.subject())
+                .setTokenId(accessToken.tokenId())
+                .setRoot(accessToken.root());
     }
 }
