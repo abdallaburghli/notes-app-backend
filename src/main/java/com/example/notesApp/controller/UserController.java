@@ -6,8 +6,10 @@ import com.example.notesApp.pojo.LoginRequest;
 import com.example.notesApp.pojo.RegisterRequest;
 import com.example.notesApp.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -28,6 +30,12 @@ public class UserController {
     @PostMapping("/api/login")
     public Response<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse res = authenticationService.login(request);
+        return new Response<>(res);
+    }
+
+    @PostMapping("/api/refresh")
+    public Response<AuthResponse> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) String refreshToken) {
+        AuthResponse res = authenticationService.refresh(refreshToken);
         return new Response<>(res);
     }
 }

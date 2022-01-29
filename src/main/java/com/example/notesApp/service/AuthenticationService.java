@@ -12,4 +12,6 @@ public interface AuthenticationService {
     AuthResponse login(LoginRequest request);
 
     CurrentPrincipal authenticate(String token);
+
+    AuthResponse refresh(String refreshToken);
 }

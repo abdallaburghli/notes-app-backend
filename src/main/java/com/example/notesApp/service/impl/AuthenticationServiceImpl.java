@@ -57,9 +57,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return generateAuthResponse(user, tokenId);
     }
 
+    @Override
+    public AuthResponse refresh(String refreshToken) {
+        RefreshToken token = tokenService.verifyRefreshToken(refreshToken);
+        User user = userRepo.findById(token.getUserId())
+                .orElseThrow(() -> new RuntimeException("Invalid Token"));
+
+        return generateAuthResponse(user, token.getTokenId());
+    }
+
     private AuthResponse generateAuthResponse(User user, UUID tokenId) {
 
         Token accessToken = tokenService.generateAccessToken(user.getId(), tokenId, user.isRoot());
+        Token refreshToken = tokenService.generateRefreshToken(user.getId(), tokenId);
 
         UserModel userModel = userMapper.convert(user);
 
@@ -68,6 +78,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new AuthResponse()
                 .setAccessToken(accessToken.getToken())
                 .setAccessTokenExpiry(accessToken.getExpiryDate())
+                .setRefreshToken(refreshToken.getToken())
+                .setRefreshTokenExpiry(refreshToken.getExpiryDate())
                 .setUser(userModel);
     }
 
