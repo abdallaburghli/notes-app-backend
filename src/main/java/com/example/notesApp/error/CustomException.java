@@ -1,14 +1,13 @@
 package com.example.notesApp.error;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.Getter;
 
+@Getter
 public class CustomException extends RuntimeException {
     private final ErrorCode error;
     private final String errorCode;
     private final String errorMessage;
     private int statusCode;
-    private final Map<String, String> errorDetails = new HashMap<>();
 
     public CustomException(ErrorCode error) {
         super(error.getMessage());
