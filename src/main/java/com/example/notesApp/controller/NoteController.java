@@ -1,6 +1,7 @@
 package com.example.notesApp.controller;
 
 import com.example.notesApp.api.Response;
+import com.example.notesApp.config.CurrentUser;
 import com.example.notesApp.pojo.NoteModel;
 import com.example.notesApp.security.LoggedIn;
 import com.example.notesApp.service.NoteService;
@@ -21,14 +22,14 @@ public class NoteController {
 
     @PostMapping("/api/v1/notes")
     @LoggedIn
-    public Response<NoteModel> addNote(@Valid @RequestBody NoteModel request) {
+    public Response<NoteModel> addNote(@Valid @RequestBody NoteModel request, CurrentUser currentUser) {
         NoteModel res = noteService.addNote(request);
         return new Response<>(res);
     }
 
     @GetMapping("/api/v1/notes")
     @LoggedIn
-    public Response<List<NoteModel>> getNotesList() {
+    public Response<List<NoteModel>> getNotesList(CurrentUser currentUser) {
         List<NoteModel> res = noteService.getNotes();
         return new Response<>(res);
     }
