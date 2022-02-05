@@ -1,5 +1,6 @@
 package com.example.notesApp.api;
 
+import com.example.notesApp.error.CustomException;
 import lombok.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,5 +24,11 @@ public class Response<T> {
         this();
         this.status = 0;
         this.data = data;
+    }
+
+    public Response(CustomException e) {
+        this.status = 1;
+        this.errorCode = e.getErrorCode();
+        this.message = e.getMessage();
     }
 }

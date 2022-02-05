@@ -7,7 +7,8 @@ import static org.springframework.http.HttpStatus.*;
 
 @Getter
 public enum Errors implements ErrorCode{
-    ;
+    INVALID_LOGIN("Invalid login", UNAUTHORIZED),
+    INVALID_TOKEN("Invalid or expired token", UNAUTHORIZED);
 
     private final String message;
     private final HttpStatus httpStatus;

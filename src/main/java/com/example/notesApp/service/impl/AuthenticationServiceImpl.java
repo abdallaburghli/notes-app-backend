@@ -1,6 +1,8 @@
 package com.example.notesApp.service.impl;
 
 import com.example.notesApp.config.CurrentPrincipal;
+import com.example.notesApp.error.CustomException;
+import com.example.notesApp.error.Errors;
 import com.example.notesApp.mapper.UserMapper;
 import com.example.notesApp.model.User;
 import com.example.notesApp.model.repository.UserRepo;
@@ -44,10 +46,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepo.findByEmailAndActiveIsTrue(request.getEmail().toLowerCase())
-                .orElseThrow(() -> new RuntimeException("cant find this user"));
+                .orElseThrow(() -> new CustomException(Errors.INVALID_LOGIN));
 
         if (!passwordPolicy.matches(request.getPassword(), user.getPassword()))
-            throw new RuntimeException("Login Error");
+            throw new CustomException(Errors.INVALID_LOGIN);
 
         user.setLastLogin(ZonedDateTime.now());
         userRepo.save(user);
@@ -61,7 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthResponse refresh(String refreshToken) {
         RefreshToken token = tokenService.verifyRefreshToken(refreshToken);
         User user = userRepo.findById(token.getUserId())
-                .orElseThrow(() -> new RuntimeException("Invalid Token"));
+                .orElseThrow(() -> new CustomException(Errors.INVALID_TOKEN));
 
         return generateAuthResponse(user, token.getTokenId());
     }
