@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.notesApp.error.CustomException;
+import com.example.notesApp.error.Errors;
 import com.example.notesApp.pojo.AccessToken;
 import com.example.notesApp.pojo.RefreshToken;
 import com.example.notesApp.pojo.Token;
@@ -79,7 +81,7 @@ public class TokenServiceImpl implements TokenService {
             UUID tokenId = UUID.fromString(jwt.getId());
             return new RefreshToken(userId, tokenId);
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Invalid Token");
+            throw new CustomException(Errors.INVALID_TOKEN);
         }
     }
 
@@ -98,7 +100,7 @@ public class TokenServiceImpl implements TokenService {
             Boolean root = jwt.getClaim(ROOT).asBoolean();
             return new AccessToken(userId, tokenId, root);
         } catch (JWTVerificationException e) {
-            throw new RuntimeException("Invalid Token {}", e);
+            throw new CustomException(Errors.INVALID_TOKEN);
         }
     }
 
