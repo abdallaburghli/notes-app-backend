@@ -23,14 +23,14 @@ public class NoteController {
     @PostMapping("/api/v1/notes")
     @LoggedIn
     public Response<NoteModel> addNote(@Valid @RequestBody NoteModel request, CurrentUser currentUser) {
-        NoteModel res = noteService.addNote(request);
+        NoteModel res = noteService.addNote(request, currentUser);
         return new Response<>(res);
     }
 
     @GetMapping("/api/v1/notes")
     @LoggedIn
     public Response<List<NoteModel>> getNotesList(CurrentUser currentUser) {
-        List<NoteModel> res = noteService.getNotes();
+        List<NoteModel> res = noteService.getNotes(currentUser);
         return new Response<>(res);
     }
 }

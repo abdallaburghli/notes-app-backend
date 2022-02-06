@@ -1,5 +1,6 @@
 package com.example.notesApp.service.impl;
 
+import com.example.notesApp.config.CurrentUser;
 import com.example.notesApp.mapper.NoteMapper;
 import com.example.notesApp.model.Note;
 import com.example.notesApp.pojo.NoteModel;
@@ -22,16 +23,16 @@ public class NoteServiceImpl implements NoteService {
     private final NoteMapper noteMapper = Mappers.getMapper(NoteMapper.class);
 
     @Override
-    public NoteModel addNote(NoteModel request) {
-        System.out.println(request.getText());
+    public NoteModel addNote(NoteModel request, CurrentUser currentUser) {
         Note note = noteMapper.convert(request);
+        note.setUser(currentUser.getUser());
         noteRepo.save(note);
         return noteMapper.convert(note);
     }
 
     @Override
-    public List<NoteModel> getNotes() {
-        List<Note> notes = noteRepo.findAll();
+    public List<NoteModel> getNotes(CurrentUser currentUser) {
+        List<Note> notes = noteRepo.findAllByUser(currentUser.getUser());
         return notes.stream()
                 .map(noteMapper::convert)
                 .collect(toList());
