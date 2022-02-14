@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.*;
 
 @Getter
-public enum Errors implements ErrorCode{
+public enum Errors implements ErrorCode {
     INVALID_LOGIN("Invalid login", UNAUTHORIZED),
-    INVALID_TOKEN("Invalid or expired token", UNAUTHORIZED);
+    INVALID_TOKEN("Invalid or expired token", UNAUTHORIZED),
+    NOTE_DOES_NOT_EXIST("Note does not exist or does not belong to the user", NOT_FOUND),
+    ILLEGAL_NOTE_REMOVAL("Illegal note removal");
 
     private final String message;
     private final HttpStatus httpStatus;
