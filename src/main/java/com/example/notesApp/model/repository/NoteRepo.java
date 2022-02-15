@@ -2,6 +2,8 @@ package com.example.notesApp.model.repository;
 
 import com.example.notesApp.model.Note;
 import com.example.notesApp.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,4 +17,6 @@ public interface NoteRepo extends JpaRepository<Note, UUID> {
     Optional<Note> findByUserAndId(User user, UUID uuid);
 
     void deleteByUserAndId(User user, UUID id);
+
+    Page<Note> findAllByUser(User user, Pageable pageable);
 }

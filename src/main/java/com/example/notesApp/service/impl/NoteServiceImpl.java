@@ -1,5 +1,7 @@
 package com.example.notesApp.service.impl;
 
+import com.example.notesApp.api.PaginatedResponse;
+import com.example.notesApp.api.PaginationRequest;
 import com.example.notesApp.config.CurrentUser;
 import com.example.notesApp.error.CustomException;
 import com.example.notesApp.error.Errors;
@@ -11,6 +13,7 @@ import com.example.notesApp.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,11 +38,13 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public List<NoteModel> getNotes(CurrentUser currentUser) {
-        List<Note> notes = noteRepo.findAllByUser(currentUser.getUser());
-        return notes.stream()
+    public PaginatedResponse<NoteModel> getNotes(PaginationRequest request, CurrentUser currentUser) {
+        Page<Note> page = noteRepo.findAllByUser(currentUser.getUser(), request.pageRequest());
+        List<NoteModel> notes = page.stream()
                 .map(noteMapper::convert)
                 .collect(toList());
+
+        return new PaginatedResponse<>(notes, page);
     }
 
     @Override
