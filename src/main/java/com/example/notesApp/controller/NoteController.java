@@ -1,5 +1,7 @@
 package com.example.notesApp.controller;
 
+import com.example.notesApp.api.PaginatedResponse;
+import com.example.notesApp.api.PaginationRequest;
 import com.example.notesApp.api.Response;
 import com.example.notesApp.config.CurrentUser;
 import com.example.notesApp.pojo.NoteModel;
@@ -9,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,10 +26,10 @@ public class NoteController {
         return new Response<>(res);
     }
 
-    @GetMapping("/api/v1/notes")
+    @PostMapping("/api/v1/notes/user")
     @LoggedIn
-    public Response<List<NoteModel>> getNotesList(CurrentUser currentUser) {
-        List<NoteModel> res = noteService.getNotes(currentUser);
+    public Response<PaginatedResponse<NoteModel>> getNotesList(@RequestBody PaginationRequest request, CurrentUser currentUser) {
+        PaginatedResponse<NoteModel> res = noteService.getNotes(request, currentUser);
         return new Response<>(res);
     }
 
